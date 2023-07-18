@@ -10,15 +10,15 @@ export class UsersRepository {
   ) {}
 
   async findById(userId: Types.ObjectId): Promise<UserDocument> {
-    return this.userModel.findById(userId);
+    return this.userModel.findById(userId).lean();
   }
 
   async findByName(name: string): Promise<UserDocument> {
-    return this.userModel.findOne({ fullName: name }); // Lowercase search
+    return this.userModel.findOne({ fullName: name }).lean(); // Lowercase search
   }
 
   async findByEmail(email: string): Promise<UserDocument> {
-    return this.userModel.findOne({ email });
+    return this.userModel.findOne({ email }).lean();
   }
 
   async createUser(dto: RegisterUserDto): Promise<UserDocument> {
