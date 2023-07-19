@@ -1,11 +1,6 @@
-import {
-  Injectable,
-  BadRequestException,
-  NotFoundException,
-  ForbiddenException,
-  HttpStatus,
-} from '@nestjs/common';
+import { Injectable, HttpStatus } from '@nestjs/common';
 import { Types } from 'mongoose';
+import { RpcException } from '@nestjs/microservices';
 
 import { UsersRepository } from './users.repository';
 import { LoginUserDto, RegisterUserDto, VerificationTokenDto } from './dto';
@@ -43,11 +38,15 @@ export class UsersService {
 
     const userWithSimilarName = await this.getUserByName(fullName);
     if (userWithSimilarName) {
-      throw new BadRequestException('User with this name already exists');
+      throw new RpcException({
+        message: 'User with this name already exists',
+      });
     }
     const userWithSimilarEmail = await this.getUserByEmail(email);
     if (userWithSimilarEmail) {
-      throw new BadRequestException('User with this email already exists');
+      throw new RpcException({
+        message: 'User with this email already exists',
+      });
     }
 
     const payload: RegisterUserDto = {
@@ -70,12 +69,16 @@ export class UsersService {
     const decodedUser: SignedPayload = await this.jwtService.verify(token);
 
     if (!decodedUser) {
-      throw new ForbiddenException('Invalid token');
+      throw new RpcException({
+        message: 'Invalid token',
+      });
     }
     const user = await this.getUserById(decodedUser.id);
 
     if (!user) {
-      throw new NotFoundException('User does not exists');
+      throw new RpcException({
+        message: 'User does not exists',
+      });
     }
 
     return {
@@ -90,7 +93,9 @@ export class UsersService {
     const user = await this.getUserByEmail(email);
 
     if (!user) {
-      throw new NotFoundException('User does not exists');
+      throw new RpcException({
+        message: 'User does not exists',
+      });
     }
 
     const doesPwdMatch = this.jwtService.comparePassword(
@@ -99,7 +104,9 @@ export class UsersService {
     );
 
     if (!doesPwdMatch) {
-      throw new NotFoundException('Incorrect email or password');
+      throw new RpcException({
+        message: 'Incorrect email or password',
+      });
     }
 
     return {

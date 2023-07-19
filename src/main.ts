@@ -1,12 +1,10 @@
 import { Transport } from '@nestjs/microservices';
-import { INestMicroservice, ValidationPipe } from '@nestjs/common';
-import { NestFactory, HttpAdapterHost } from '@nestjs/core';
+import { INestMicroservice } from '@nestjs/common';
+import { NestFactory } from '@nestjs/core';
 import { join } from 'path';
 
 import { AppModule } from './app.module';
 import { protobufPackage } from './users/user.pb';
-// import { AllExceptionsFilter } from './users/filters/exception.filter';
-// import { AllExceptionsFilter } from './users/filters/http-exception.filter';
 
 async function bootstrap() {
   const app: INestMicroservice = await NestFactory.createMicroservice(
@@ -20,15 +18,6 @@ async function bootstrap() {
       },
     },
   );
-  // const httpAdapter = app.get(HttpAdapterHost);
-
-  // app.useGlobalFilters(new HttpExceptionFilter());
-  // app.useGlobalFilters(new AllExceptionsFilter(httpAdapter));
-  // app.useGlobalPipes(new ValidationPipe());
-  // app.useGlobalPipes(new ValidationPipe({ whitelist: true, transform: true }));
-  // const adapter = app.get(HttpAdapterHost);
-  // const httpAdapter = app.getHttpAdapter();
-  // app.useGlobalFilters(new AllExceptionsFilter(adapter));
 
   await app.listen();
 }
